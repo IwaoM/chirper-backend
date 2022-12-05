@@ -1,0 +1,36 @@
+{
+	"extends": "eslint:recommended",
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false
+    },
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"rules": {
+    "arrow-spacing": ["warn", { "before": true, "after": true }],
+    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+    "comma-spacing": "error",
+    "comma-style": "error",
+    "curly": "error",
+    "dot-location": ["error", "property"],
+    "indent": ["error", 2],
+    "keyword-spacing": "error",
+    "max-statements-per-line": ["error", { "max": 2 }],
+    "no-constant-condition": "off",
+    "no-lonely-if": "error",
+    "no-multi-spaces": "error",
+    "no-trailing-spaces": ["error"],
+    "no-var": "error",
+    "object-curly-spacing": ["error", "always"],
+    "quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }],
+    "semi": "error",
+    "space-before-blocks": "error",
+    "space-before-function-paren": "error",
+    "space-in-parens": "error",
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "yoda": "error"
+	}
+}

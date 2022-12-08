@@ -13,6 +13,7 @@ router.get("/search", chirpsCtrl.searchAll);
 router.post("/", chirpsCtrl.postOne);
 router.post("/:id/star", chirpsCtrl.starOne);
 
+router.delete("/:id/star", chirpsCtrl.unstarOne);
 router.delete("/:id", chirpsCtrl.deleteOne);
 
 module.exports = router;

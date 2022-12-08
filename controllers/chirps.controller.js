@@ -1,7 +1,7 @@
 const connection = require("../db");
 
 exports.getAll = (req, res) => {
-  connection.query("SELECT * FROM chirp ORDER BY timestamp DESC", function (err, result) {
+  connection.query("SELECT chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, user.username, user.handle, user.picture FROM chirp JOIN user ON chirp.author_id = user.id ORDER BY timestamp DESC", function (err, result) {
     if (err) {
       res.status(400).json({ err });
     }
@@ -14,7 +14,7 @@ exports.getAll = (req, res) => {
 };
 
 exports.getOne = (req, res) => {
-  connection.query(`SELECT * FROM chirp WHERE id = ${req.params.id}`, function (err, result) {
+  connection.query(`SELECT chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, user.username, user.handle, user.picture FROM chirp JOIN user ON chirp.author_id = user.id WHERE chirp.id = ${req.params.id}`, function (err, result) {
     if (err) {
       res.status(400).json({ err });
     }
@@ -70,6 +70,9 @@ exports.postOne = () => {};
 
 // todo once authentication is set up
 exports.starOne = () => {};
+
+// todo once authentication is set up
+exports.unstarOne = () => {};
 
 // todo protect route!
 exports.deleteOne = (req, res) => {

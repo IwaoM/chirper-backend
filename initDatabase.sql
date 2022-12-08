@@ -25,6 +25,8 @@ CREATE TABLE user (
   handle VARCHAR(40) UNIQUE NOT NULL,
   bio VARCHAR(150),
   picture VARCHAR(100),
+  theme_bg INT NOT NULL DEFAULT 0,
+  theme_accent INT NOT NULL DEFAULT 0,
   PRIMARY KEY (id)
 );
 
@@ -33,11 +35,11 @@ CREATE TABLE chirp (
   timestamp DATETIME NOT NULL,
   text VARCHAR(400) NOT NULL,
   image VARCHAR(100),
-  authorId INT NOT NULL,
-  replyToId INT,
+  author_id INT NOT NULL,
+  reply_to_id INT,
   PRIMARY KEY(id),
-  FOREIGN KEY (authorId) REFERENCES user(id) ON DELETE CASCADE,
-  FOREIGN KEY (replyToId) REFERENCES chirp(id) ON DELETE SET NULL
+  FOREIGN KEY (author_id) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (reply_to_id) REFERENCES chirp(id) ON DELETE SET NULL
 );
 
 -- Join table for n..m relationship
@@ -95,7 +97,7 @@ INSERT INTO user (email, password, username, handle, bio, picture) VALUES
 ('sfranzetti12@wikia.com', 'gwaIpncuqq', 'Shandie Franzetti', 'sfranzetti12', 'Donec semper sapien a libero.', 'https://robohash.org/doloribusprovidenttenetur.png?size=240x240&set=set1'),
 ('hzanini13@wisc.edu', '0ySQK1u', 'Heinrik Zanini', 'hzanini13', null, 'https://robohash.org/inveroet.png?size=240x240&set=set1');
 
-INSERT INTO chirp (timestamp, text, image, authorId, replyToId) VALUES
+INSERT INTO chirp (timestamp, text, image, author_id, reply_to_id) VALUES
 ('2022-08-20 11:33:56', 'Aliquam quis turpis eget elit sodales scelerisque.', null, 11, null),
 ('2022-04-24 02:25:41', 'Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus. Suspendisse potenti.', 'http://dummyimage.com/535x528.png/dddddd/000000', 19, null),
 ('2022-02-27 19:17:24', 'Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.', null, 17, null),

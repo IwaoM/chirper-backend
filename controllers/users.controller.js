@@ -5,10 +5,7 @@ exports.getOne = (req, res) => {
     if (err) {
       res.status(400).json({ err });
     }
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
@@ -17,11 +14,7 @@ exports.getOneChirps = (req, res) => {
     if (err) {
       res.status(400).json({ err });
     }
-    res.status(200).json({
-      status: "success",
-      length: result?.length,
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
@@ -30,11 +23,7 @@ exports.getOneStars = (req, res) => {
     if (err) {
       res.status(400).json({ err });
     }
-    res.status(200).json({
-      status: "success",
-      length: result?.length,
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 

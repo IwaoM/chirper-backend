@@ -1,27 +1,48 @@
 const connection = require("../db");
 
 exports.getAll = (req, res) => {
-  connection.query("SELECT chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, user.username, user.handle, user.picture FROM chirp JOIN user ON chirp.author_id = user.id ORDER BY timestamp DESC", function (err, result) {
+  let sqlQuery = `SELECT 
+  chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
+  user.username, user.handle, user.picture, 
+  chirp_star_count_vw.star_count, 
+  chirp_reply_count_vw.reply_count 
+
+FROM 
+  chirp 
+  JOIN user ON chirp.author_id = user.id 
+  JOIN chirp_star_count_vw ON chirp.id = chirp_star_count_vw.id 
+  JOIN chirp_reply_count_vw ON chirp.id = chirp_reply_count_vw.id 
+
+ORDER BY chirp.timestamp DESC`;
+  connection.query(sqlQuery, function (err, result) {
     if (err) {
       res.status(400).json({ err });
+      return;
     }
-    res.status(200).json({
-      status: "success",
-      length: result?.length,
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
 exports.getOne = (req, res) => {
-  connection.query(`SELECT chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, user.username, user.handle, user.picture FROM chirp JOIN user ON chirp.author_id = user.id WHERE chirp.id = ${req.params.id}`, function (err, result) {
+  let sqlQuery = `SELECT 
+  chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
+  user.username, user.handle, user.picture, 
+  chirp_star_count_vw.star_count, 
+  chirp_reply_count_vw.reply_count 
+
+FROM 
+  chirp 
+  JOIN user ON chirp.author_id = user.id 
+  JOIN chirp_star_count_vw ON chirp.id = chirp_star_count_vw.id 
+  JOIN chirp_reply_count_vw ON chirp.id = chirp_reply_count_vw.id 
+
+  WHERE chirp.id = ${req.params.id}`;
+  connection.query(sqlQuery, function (err, result) {
     if (err) {
       res.status(400).json({ err });
+      return;
     }
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
@@ -29,12 +50,9 @@ exports.getOneReplies = (req, res) => {
   connection.query(`SELECT * FROM chirp WHERE reply_to_id = ${req.params.id}`, function (err, result) {
     if (err) {
       res.status(400).json({ err });
+      return;
     }
-    res.status(200).json({
-      status: "success",
-      length: result?.length,
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
@@ -42,11 +60,9 @@ exports.getOneReplyCount = (req, res) => {
   connection.query(`SELECT COUNT(*) AS replycount FROM chirp WHERE reply_to_id = ${req.params.id}`, function (err, result) {
     if (err) {
       res.status(400).json({ err });
+      return;
     }
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
@@ -54,11 +70,9 @@ exports.getOneStarCount = (req, res) => {
   connection.query(`SELECT COUNT(*) AS starcount FROM user_stars_chirp WHERE chirp_id = ${req.params.id}`, function (err, result) {
     if (err) {
       res.status(400).json({ err });
+      return;
     }
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
+    res.status(200).json(result);
   });
 };
 
@@ -79,10 +93,8 @@ exports.deleteOne = (req, res) => {
   connection.query(`DELETE FROM chirp WHERE chirp_id = ${req.params.id}`, function (err, result) {
     if (err) {
       res.status(400).json({ err });
+      return;
     }
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
+    res.status(200).json(result);
   });
 };

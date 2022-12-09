@@ -8,8 +8,10 @@ USE chirper;
 
 
 --
--- Drop old tables to reset all data
+-- Drop old views & tables to reset all data
 --
+DROP VIEW IF EXISTS chirp_star_count_vw;
+DROP VIEW IF EXISTS chirp_reply_count_vw;
 DROP TABLE IF EXISTS user_stars_chirp;
 DROP TABLE IF EXISTS chirp;
 DROP TABLE IF EXISTS user;
@@ -52,6 +54,18 @@ CREATE TABLE user_stars_chirp (
 );
 
 --
+-- Create views
+--
+CREATE VIEW chirp_star_count_vw AS (
+	SELECT chirp.id, COUNT(user_stars_chirp.chirp_id) AS star_count FROM chirp LEFT JOIN user_stars_chirp ON chirp.id = user_stars_chirp.chirp_id GROUP BY chirp.id
+);
+
+CREATE VIEW chirp_reply_count_vw AS (
+	SELECT main_chirp.id, COUNT(reply_chirp.reply_to_id) AS reply_count FROM chirp main_chirp LEFT JOIN chirp reply_chirp ON main_chirp.id = reply_chirp.reply_to_id GROUP BY main_chirp.id
+);
+
+
+--
 -- Insert fake data
 -- Generated using www.mockaroo.com
 --
@@ -61,24 +75,24 @@ INSERT INTO user (email, password, username, handle, bio, picture) VALUES
 ('tcollens2@dagondesign.com', 'Rr6rz28bc', 'Tania Collens', 'tcollens2', null, 'https://robohash.org/inventorecumtemporibus.png?size=240x240&set=set1'),
 ('mhearnshaw3@ustream.tv', 'n5jqq4', 'Melisandra Hearnshaw', 'mhearnshaw3', 'Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.', 'https://robohash.org/sitearumaut.png?size=240x240&set=set1'),
 ('cfransewich4@icio.us', 'P9rMut', 'Carmon Fransewich', 'cfransewich4', 'Morbi porttitor lorem id ligula.', 'https://robohash.org/quiutiste.png?size=240x240&set=set1'),
-('sife5@home.pl', 'T2cbM0Q6qa4r', 'Sandro Ife', 'sife5', 'Etiam vel augue.', null),
-('rmcconnal6@thetimes.co.uk', 'jb9q9eXnDA', 'Ralina McConnal', 'rmcconnal6', 'Donec posuere metus vitae ipsum.', null),
+('sife5@home.pl', 'T2cbM0Q6qa4r', 'Sandro Ife', 'sife5', 'Etiam vel augue.', 'default'),
+('rmcconnal6@thetimes.co.uk', 'jb9q9eXnDA', 'Ralina McConnal', 'rmcconnal6', 'Donec posuere metus vitae ipsum.', 'default'),
 ('rsawyers7@cafepress.com', 'fxb9bJGll', 'Rica Sawyers', 'rsawyers7', 'Pellentesque at nulla.', 'https://robohash.org/utettotam.png?size=240x240&set=set1'),
 ('kdyster8@delicious.com', '7qG2PPKPVi', 'Kristos Dyster', 'kdyster8', 'Aenean auctor gravida sem.', 'https://robohash.org/pariaturlaborummolestiae.png?size=240x240&set=set1'),
-('psproson9@w3.org', 'pdpzVSbSMrn', 'Penelopa Sproson', 'psproson9', 'In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.', null),
+('psproson9@w3.org', 'pdpzVSbSMrn', 'Penelopa Sproson', 'psproson9', 'In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.', 'default'),
 ('jmullinera@abc.net.au', '8IyBlzUqevD', 'Johnnie Mulliner', 'jmullinera', 'Mauris sit amet eros.', 'https://robohash.org/aliquidvoluptatemmagnam.png?size=240x240&set=set1'),
-('agarsideb@microsoft.com', '7RXzsF9afc', 'Alexander Garside', 'agarsideb', 'Morbi porttitor lorem id ligula.', null),
+('agarsideb@microsoft.com', '7RXzsF9afc', 'Alexander Garside', 'agarsideb', 'Morbi porttitor lorem id ligula.', 'default'),
 ('drennardc@nymag.com', '7acvm8wP1U', 'Dill Rennard', 'drennardc', null, 'https://robohash.org/sedeiusnon.png?size=240x240&set=set1'),
 ('codoughertyd@yahoo.com', 'MJ6z2s1P', 'Carrol O''Dougherty', 'codoughertyd', null, 'https://robohash.org/ametrecusandaedolores.png?size=240x240&set=set1'),
-('jpaylee@washington.edu', '04cq1z', 'Jereme Payle', 'jpaylee', 'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo.', null),
+('jpaylee@washington.edu', '04cq1z', 'Jereme Payle', 'jpaylee', 'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo.', 'default'),
 ('cguaref@unc.edu', 'BkjfsapU3', 'Cheri Guare', 'cguaref', null, 'https://robohash.org/utillumvoluptas.png?size=240x240&set=set1'),
 ('gwondraschekg@ted.com', '4MVoHR', 'Geri Wondraschek', 'gwondraschekg', 'Suspendisse accumsan tortor quis turpis.', 'https://robohash.org/doloremundevelit.png?size=240x240&set=set1'),
 ('corrillh@wix.com', 'ErtLLwHOw8GO', 'Crysta Orrill', 'corrillh', 'Nulla ac enim.', 'https://robohash.org/cumqueetvitae.png?size=240x240&set=set1'),
 ('cdeleai@google.pl', 'K3Bp4MJz', 'Charlena Delea', 'cdeleai', 'Morbi a ipsum.', 'https://robohash.org/eiusdelenitirerum.png?size=240x240&set=set1'),
 ('rnewensj@forbes.com', '6NlsjFGrKj', 'Ruprecht Newens', 'rnewensj', 'Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.', 'https://robohash.org/suntexcepturibeatae.png?size=240x240&set=set1'),
-('dtimoneyk@ovh.net', '7JCTG5', 'Dorelia Timoney', 'dtimoneyk', 'Donec semper sapien a libero.', null),
+('dtimoneyk@ovh.net', '7JCTG5', 'Dorelia Timoney', 'dtimoneyk', 'Donec semper sapien a libero.', 'default'),
 ('cwolstenholmel@xinhuanet.com', 'hle1kM', 'Caryn Wolstenholme', 'cwolstenholmel', 'Integer non velit.', 'https://robohash.org/fugitquiain.png?size=240x240&set=set1'),
-('dsweedym@dropbox.com', 'bjrQAj2', 'Doris Sweedy', 'dsweedym', 'Nullam porttitor lacus at turpis.', null),
+('dsweedym@dropbox.com', 'bjrQAj2', 'Doris Sweedy', 'dsweedym', 'Nullam porttitor lacus at turpis.', 'default'),
 ('wshawcrossn@home.pl', 'M6sx7r', 'Worthington Shawcross', 'wshawcrossn', 'Curabitur convallis.', 'https://robohash.org/animipariaturconsequuntur.png?size=240x240&set=set1'),
 ('nbuckyo@mtv.com', 'ZKTLaKQ2', 'Nils Bucky', 'nbuckyo', null, 'https://robohash.org/quisquamquammolestiae.png?size=240x240&set=set1'),
 ('hbunstonep@bbb.org', 'N10Ptk06ORi', 'Hakeem Bunstone', 'hbunstonep', 'Fusce posuere felis sed lacus.', 'https://robohash.org/animiconsequunturcorporis.png?size=240x240&set=set1'),
@@ -91,7 +105,7 @@ INSERT INTO user (email, password, username, handle, bio, picture) VALUES
 ('rmacw@google.it', 'cK2QqmMNEH', 'Roxy Mac', 'rmacw', null, 'https://robohash.org/modietomnis.png?size=240x240&set=set1'),
 ('sloramx@cmu.edu', '12zeaT1SSCd', 'Stevy Loram', 'sloramx', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', 'https://robohash.org/doloresdistinctiovoluptas.png?size=240x240&set=set1'),
 ('hantonazziy@vk.com', 'v9fYzYyzIrJ', 'Harlie Antonazzi', 'hantonazziy', null, 'https://robohash.org/liberocumrepellendus.png?size=240x240&set=set1'),
-('areinertz@blog.com', 'cEN4J6cUEk', 'Anabel Reinert', 'areinertz', null, null),
+('areinertz@blog.com', 'cEN4J6cUEk', 'Anabel Reinert', 'areinertz', null, 'default'),
 ('xcopping10@trellian.com', 'FYOuKgO', 'Ximenes Copping', 'xcopping10', 'Aliquam erat volutpat.', 'https://robohash.org/magniplaceatinventore.png?size=240x240&set=set1'),
 ('hsemrad11@ebay.co.uk', 'sNfaXuA5', 'Horst Semrad', 'hsemrad11', null, 'https://robohash.org/itaquequisquamvoluptas.png?size=240x240&set=set1'),
 ('sfranzetti12@wikia.com', 'gwaIpncuqq', 'Shandie Franzetti', 'sfranzetti12', 'Donec semper sapien a libero.', 'https://robohash.org/doloribusprovidenttenetur.png?size=240x240&set=set1'),

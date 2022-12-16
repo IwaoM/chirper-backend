@@ -27,8 +27,24 @@ exports.getOneStars = (req, res) => {
   });
 };
 
-// todo once request body structure is set
 exports.searchAll = () => {};
 
-// todo once request body structure is set
+exports.searchEmail = (req, res) => {
+  connection.query(`SELECT COUNT(*) AS email_taken FROM user WHERE email = '${req.query.email}'`, function (err, result) {
+    if (err) {
+      res.status(400).json({ err });
+    }
+    res.status(200).json(result);
+  });
+};
+
+exports.searchHandle = (req, res) => {
+  connection.query(`SELECT COUNT(*) AS handle_taken FROM user WHERE handle = '${req.query.handle}'`, function (err, result) {
+    if (err) {
+      res.status(400).json({ err });
+    }
+    res.status(200).json(result);
+  });
+};
+
 exports.postOne = () => {};

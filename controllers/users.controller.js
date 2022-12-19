@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const connection = require("../db");
 
 exports.getOne = (req, res) => {
@@ -47,4 +49,14 @@ exports.searchHandle = (req, res) => {
   });
 };
 
-exports.postOne = () => {};
+exports.postOne = (req, res) => {
+  if (!req.file) {
+    // no profile pic
+  } else {
+    // save the image temporarily
+    let tempFolder = path.dirname(__dirname);
+    tempFolder = path.join(tempFolder, "temp");
+    fs.writeFileSync(path.join(tempFolder, Date.now() + ".png"), req.file.buffer);
+  }
+  res.send();
+};

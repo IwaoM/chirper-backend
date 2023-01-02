@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/", chirpsCtrl.getAll);
 router.get("/:id", chirpsCtrl.getOne);
+router.get("/:id/image", chirpsCtrl.getOneImage);
 router.get("/:id/replies", chirpsCtrl.getOneReplies);
 router.get("/:id/replycount", chirpsCtrl.getOneReplyCount);
 router.get("/:id/starcount", chirpsCtrl.getOneStarCount);

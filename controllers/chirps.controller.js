@@ -1,4 +1,8 @@
+const fs = require("fs");
+const path = require("path");
 const connection = require("../db");
+
+const imageFolder = path.join(path.dirname(__dirname), "chirpImages");
 
 exports.getAll = (req, res) => {
   let sqlQuery = `SELECT 
@@ -44,6 +48,19 @@ FROM
     }
     res.status(200).json(result);
   });
+};
+
+exports.getOneImage = (req, res) => {
+  const imagePath = path.join(imageFolder, req.params.id + ".png");
+  if (fs.existsSync(imagePath)) {
+    res.sendFile(imagePath, function (err) {
+      if (err) {
+        res.status(400).json({ err });
+      }
+    });
+  } else {
+    res.status(200).json(null);
+  }
 };
 
 exports.getOneReplies = (req, res) => {

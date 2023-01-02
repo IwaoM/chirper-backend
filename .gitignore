@@ -1,9 +1,6 @@
 # Node modules folder
 node_modules
 
-# temp folder content
-temp/**
-
 # config file
 config.json
 

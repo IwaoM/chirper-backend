@@ -50,13 +50,30 @@ exports.searchHandle = (req, res) => {
 };
 
 exports.postOne = (req, res) => {
-  if (!req.file) {
-    // no profile pic
-  } else {
-    // save the image temporarily
-    let tempFolder = path.dirname(__dirname);
-    tempFolder = path.join(tempFolder, "temp");
-    fs.writeFileSync(path.join(tempFolder, Date.now() + ".png"), req.file.buffer);
-  }
-  res.send();
+  let sqlQuery = `INSERT INTO user (email, password, username, handle, bio)
+VALUES ('${req.body.email}', '${req.body.password}', '${req.body.username ? req.body.username : req.body.handle}', '${req.body.handle}', '${req.body.bio}')`;
+  connection.query(sqlQuery, function (err) {
+    if (err) {
+      res.status(400).json({ err });
+      return;
+    }
+    sqlQuery = `SELECT * FROM user WHERE email = '${req.body.email}'`;
+    connection.query(sqlQuery, function (err2, result2) {
+      if (err2) {
+        res.status(400).json({ err2 });
+        return;
+      }
+
+      if (!req.file) {
+        // no profile pic
+      } else {
+        // save the image
+        let ppFolder = path.join(path.dirname(__dirname), "profilePictures");
+        const pictureName = result2[0].id + ".png";
+        fs.writeFileSync(path.join(ppFolder, pictureName), req.file.buffer);
+      }
+
+      res.status(200).json(result2);
+    });
+  });
 };

@@ -9,6 +9,7 @@ router.get("/search-email", usersCtrl.searchEmail);
 router.get("/search-handle", usersCtrl.searchHandle);
 router.get("/search", usersCtrl.searchAll);
 router.get("/:id", usersCtrl.getOne);
+router.get("/:id/picture", usersCtrl.getOnePicture);
 router.get("/:id/chirps", usersCtrl.getOneChirps);
 router.get("/:id/stars", usersCtrl.getOneStars);
 

@@ -3,7 +3,7 @@ const connection = require("../db");
 exports.getAll = (req, res) => {
   let sqlQuery = `SELECT 
   chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
-  user.username, user.handle, user.picture, 
+  user.username, user.handle, 
   chirp_star_count_vw.star_count, 
   chirp_reply_count_vw.reply_count 
 
@@ -26,7 +26,7 @@ ORDER BY chirp.timestamp DESC`;
 exports.getOne = (req, res) => {
   let sqlQuery = `SELECT 
   chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
-  user.username, user.handle, user.picture, 
+  user.username, user.handle, 
   chirp_star_count_vw.star_count, 
   chirp_reply_count_vw.reply_count 
 

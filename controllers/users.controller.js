@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const connection = require("../db");
 
+const ppFolder = path.join(path.dirname(__dirname), "profilePictures");
+
 exports.getOne = (req, res) => {
   connection.query(`SELECT * FROM user WHERE id = ${req.params.id}`, function (err, result) {
     if (err) {
@@ -9,6 +11,24 @@ exports.getOne = (req, res) => {
     }
     res.status(200).json(result);
   });
+};
+
+exports.getOnePicture = (req, res) => {
+  const ppPath = path.join(ppFolder, req.params.id + ".png");
+  const defaultPpPath = path.join(ppFolder, "default.png");
+  if (fs.existsSync(ppPath)) {
+    res.sendFile(ppPath, function (err) {
+      if (err) {
+        res.status(400).json({ err });
+      }
+    });
+  } else {
+    res.sendFile(defaultPpPath, function (err) {
+      if (err) {
+        res.status(400).json({ err });
+      }
+    });
+  }
 };
 
 exports.getOneChirps = (req, res) => {
@@ -68,7 +88,6 @@ VALUES ('${req.body.email}', '${req.body.password}', '${req.body.username ? req.
         // no profile pic
       } else {
         // save the image
-        let ppFolder = path.join(path.dirname(__dirname), "profilePictures");
         const pictureName = result2[0].id + ".png";
         fs.writeFileSync(path.join(ppFolder, pictureName), req.file.buffer);
       }

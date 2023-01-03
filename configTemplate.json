@@ -1,4 +1,5 @@
 {
   "mysqlUsername": "your MySQL username here",
-  "mysqlPassword": "your MySQL password here"
+  "mysqlPassword": "your MySQL password here",
+  "jwtSecret": "your JWT secret here (a string of your choosing)"
 }

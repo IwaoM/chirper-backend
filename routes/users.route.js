@@ -1,19 +1,13 @@
 const express = require("express");
-const multer = require("multer");
 const usersCtrl = require("../controllers/users.controller");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
-const upload = multer();
 
-router.get("/search-email", usersCtrl.searchEmail);
-router.get("/search-handle", usersCtrl.searchHandle);
-router.get("/search", usersCtrl.searchAll);
-router.get("/:id", usersCtrl.getOne);
-router.get("/:id/picture", usersCtrl.getOnePicture);
-router.get("/:id/chirps", usersCtrl.getOneChirps);
-router.get("/:id/stars", usersCtrl.getOneStars);
-
-router.post("/signup", upload.single("profilePic"), usersCtrl.signup);
-router.post("/login", upload.none(), usersCtrl.login);
+router.get("/search", auth, usersCtrl.searchAll);
+router.get("/:id", auth, usersCtrl.getOne);
+router.get("/:id/picture", auth, usersCtrl.getOnePicture);
+router.get("/:id/chirps", auth, usersCtrl.getOneChirps);
+router.get("/:id/stars", auth, usersCtrl.getOneStars);
 
 module.exports = router;

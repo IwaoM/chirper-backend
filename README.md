@@ -12,4 +12,4 @@ Back-end repo for Chirper, a WIP basic Twitter-like app
 
 ## Setup
 
-- `configTemplate.json` should be renamed to `config.json` and its values changed with your own MySQL credentials
+- `configTemplate.json` should be renamed to `config.json` and its values changed with your own values

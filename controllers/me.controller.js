@@ -1,13 +1,9 @@
 // const connection = require("../db");
 
-// todo once authentication is set up & request body structure is set
-exports.setProfile = () => {};
+exports.setProfile = async () => {};
 
-// todo once authentication is set up & request body structure is set
-exports.setPassword = () => {};
+exports.setPassword = async () => {};
 
-// todo once authentication is set up & request body structure is set
-exports.setTheme = () => {};
+exports.setTheme = async () => {};
 
-// todo once authentication is set up
-exports.deleteAccount = () => {};
+exports.deleteAccount = async () => {};

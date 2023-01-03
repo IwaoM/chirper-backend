@@ -13,6 +13,7 @@ router.get("/:id/picture", usersCtrl.getOnePicture);
 router.get("/:id/chirps", usersCtrl.getOneChirps);
 router.get("/:id/stars", usersCtrl.getOneStars);
 
-router.post("/", upload.single("profilePic"), usersCtrl.postOne);
+router.post("/signup", upload.single("profilePic"), usersCtrl.signup);
+router.post("/login", usersCtrl.login);
 
 module.exports = router;

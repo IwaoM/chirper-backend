@@ -4,7 +4,7 @@ const connection = require("../db");
 
 const imageFolder = path.join(path.dirname(__dirname), "chirpImages");
 
-exports.getAll = (req, res) => {
+exports.getAll = async (req, res) => {
   let sqlQuery = `SELECT 
   chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
   user.username, user.handle, 
@@ -18,16 +18,15 @@ FROM
   JOIN chirp_reply_count_vw ON chirp.id = chirp_reply_count_vw.id 
 
 ORDER BY chirp.timestamp DESC`;
-  connection.query(sqlQuery, function (err, result) {
-    if (err) {
-      res.status(400).json({ err });
-      return;
-    }
+  try {
+    const result = await connection.query(sqlQuery);
     res.status(200).json(result);
-  });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
 };
 
-exports.getOne = (req, res) => {
+exports.getOne = async (req, res) => {
   let sqlQuery = `SELECT 
   chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
   user.username, user.handle, 
@@ -41,77 +40,53 @@ FROM
   JOIN chirp_reply_count_vw ON chirp.id = chirp_reply_count_vw.id 
 
   WHERE chirp.id = ${req.params.id}`;
-  connection.query(sqlQuery, function (err, result) {
-    if (err) {
-      res.status(400).json({ err });
-      return;
-    }
+  try {
+    const result = await connection.query(sqlQuery);
     res.status(200).json(result);
-  });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
 };
 
 exports.getOneImage = (req, res) => {
   const imagePath = path.join(imageFolder, req.params.id + ".png");
-  if (fs.existsSync(imagePath)) {
-    res.sendFile(imagePath, function (err) {
-      if (err) {
-        res.status(400).json({ err });
-      }
-    });
-  } else {
-    res.status(200).json(null);
+  try {
+    if (fs.existsSync(imagePath)) {
+      res.status(200).sendFile(imagePath);
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (err) {
+    res.status(400).json({ err });
   }
 };
 
-exports.getOneReplies = (req, res) => {
-  connection.query(`SELECT * FROM chirp WHERE reply_to_id = ${req.params.id}`, function (err, result) {
-    if (err) {
-      res.status(400).json({ err });
-      return;
-    }
+exports.getOneReplies = async () => {};
+
+exports.getOneReplyCount = async (req, res) => {
+  try {
+    const result = await connection.query(`SELECT COUNT(*) AS replycount FROM chirp WHERE reply_to_id = ${req.params.id}`);
     res.status(200).json(result);
-  });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
 };
 
-exports.getOneReplyCount = (req, res) => {
-  connection.query(`SELECT COUNT(*) AS replycount FROM chirp WHERE reply_to_id = ${req.params.id}`, function (err, result) {
-    if (err) {
-      res.status(400).json({ err });
-      return;
-    }
+exports.getOneStarCount = async (req, res) => {
+  try {
+    const result = await connection.query(`SELECT COUNT(*) AS starcount FROM user_stars_chirp WHERE chirp_id = ${req.params.id}`);
     res.status(200).json(result);
-  });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
 };
 
-exports.getOneStarCount = (req, res) => {
-  connection.query(`SELECT COUNT(*) AS starcount FROM user_stars_chirp WHERE chirp_id = ${req.params.id}`, function (err, result) {
-    if (err) {
-      res.status(400).json({ err });
-      return;
-    }
-    res.status(200).json(result);
-  });
-};
+exports.searchAll = async () => {};
 
-// todo once request body structure is set
-exports.searchAll = () => {};
+exports.postOne = async () => {};
 
-// todo once request body structure is set
-exports.postOne = () => {};
+exports.starOne = async () => {};
 
-// todo once authentication is set up
-exports.starOne = () => {};
+exports.unstarOne = async () => {};
 
-// todo once authentication is set up
-exports.unstarOne = () => {};
-
-// todo protect route!
-exports.deleteOne = (req, res) => {
-  connection.query(`DELETE FROM chirp WHERE chirp_id = ${req.params.id}`, function (err, result) {
-    if (err) {
-      res.status(400).json({ err });
-      return;
-    }
-    res.status(200).json(result);
-  });
-};
+exports.deleteOne = async () => {};

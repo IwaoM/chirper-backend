@@ -2,9 +2,23 @@ const mysql = require("mysql");
 const fs = require("node:fs");
 const path = require("node:path");
 const readline = require("readline");
+const util = require("util");
 const { mysqlUsername, mysqlPassword } = require("./config.json");
 
-const connection = mysql.createConnection({
+// Wrapper : the query() & connect() methods are promisified
+function createAsyncConnection (config) {
+  const connection = mysql.createConnection(config);
+  return {
+    query (sql, args) {
+      return util.promisify(connection.query).call(connection, sql, args);
+    },
+    connect (callback) {
+      return util.promisify(connection.connect).call(connection, callback);
+    }
+  };
+}
+
+const connection = createAsyncConnection({
   multipleStatements: true,
   host: "localhost",
   user: mysqlUsername,

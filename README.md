@@ -13,3 +13,9 @@ Back-end repo for Chirper, a WIP basic Twitter-like app
 ## Setup
 
 - `configTemplate.json` should be renamed to `config.json` and its values changed with your own values
+
+## Start the server
+
+- The first time you start the server: `node server resetdb`
+- The following times: `node server`
+- If you need to reset the database to its default contents: `node server resetdb`

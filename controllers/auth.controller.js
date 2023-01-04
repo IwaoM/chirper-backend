@@ -13,17 +13,18 @@ exports.signup = async (req, res) => {
     const hashedPw = await bcrypt.hash(req.body.password, 10);
     let sqlQuery = `INSERT INTO user (email, password, username, handle, bio)
 VALUES ('${req.body.email}', '${hashedPw}', '${req.body.username ? req.body.username : req.body.handle}', '${req.body.handle}', '${req.body.bio}')`;
-    const result = await connection.query(sqlQuery);
+    await connection.query(sqlQuery);
+
+    sqlQuery = `SELECT * FROM user WHERE email = '${req.body.email}'`;
+    const result2 = await connection.query(sqlQuery);
 
     if (req.file) {
       // save the profile pic
-      sqlQuery = `SELECT * FROM user WHERE email = '${req.body.email}'`;
-      const result2 = await connection.query(sqlQuery);
       const pictureName = result2[0].id + ".png";
       fs.writeFileSync(path.join(ppFolder, pictureName), req.file.buffer);
     }
 
-    res.status(200).json(result);
+    res.status(200).json(result2[0].id);
   } catch (err) {
     res.status(500).json({ err });
   }
@@ -38,6 +39,7 @@ exports.login = async (req, res) => {
       if (validPw) {
         res.status(200).json({
           userId: result[0].id,
+          username: result[0].username,
           token: jwt.sign(
             { userId: result[0].id },
             jwtSecret,

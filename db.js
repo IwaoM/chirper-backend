@@ -1,7 +1,6 @@
 const mysql = require("mysql");
 const fs = require("node:fs");
 const path = require("node:path");
-const readline = require("readline");
 const util = require("util");
 const { mysqlUsername, mysqlPassword } = require("./config.json");
 
@@ -25,38 +24,25 @@ const connection = createAsyncConnection({
   password: mysqlPassword
 });
 
-// input script
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-
-connection.connect(error => {
+connection.connect(async error => {
   if (error) {
     throw error;
   }
-  rl.question("Reset database? (y/n): ", function (answer) {
-    if (answer.toLowerCase() === "yes" || answer.toLowerCase() === "y") {
+  try {
+    if (process.argv.length === 3 && process.argv[2].toLowerCase() === "resetdb") {
       const sqlScriptDir = path.join(__dirname, "initDatabase.sql");
       const sqlScript = fs.readFileSync(sqlScriptDir, { encoding:"utf8", flag:"r" });
-      connection.query(sqlScript, function (err) {
-        if (err) {
-          throw err;
-        }
-        console.log("Database init script executed");
-      });
+      await connection.query(sqlScript);
+      console.log("Database init script executed");
     } else {
-      connection.query("USE chirper", function (err) {
-        if (err) {
-          throw err;
-        }
-        console.log("Database init script skipped");
-      });
+      await connection.query("USE chirper");
+      console.log("Database init script skipped");
     }
-    rl.close();
-    console.log("Connection to MySQL ready");
-  });
+  } catch (err) {
+    console.error("Error when connecting to database");
+    throw err;
+  }
+  console.log("Connection to MySQL ready");
 });
 
 module.exports = connection;

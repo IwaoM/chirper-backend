@@ -130,4 +130,12 @@ exports.starOne = async () => {};
 
 exports.unstarOne = async () => {};
 
-exports.deleteOne = async () => {};
+exports.deleteOne = async (req, res) => {
+  try {
+    let sqlQuery = `DELETE FROM chirp WHERE id = '${req.params.id}'`;
+    await connection.query(sqlQuery);
+    res.status(200).json(req.params.id);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};

@@ -12,7 +12,7 @@ exports.signup = async (req, res) => {
   try {
     const hashedPw = await bcrypt.hash(req.body.password, 10);
     let sqlQuery = `INSERT INTO user (email, password, username, handle, bio)
-VALUES ('${req.body.email}', '${hashedPw}', '${req.body.username ? req.body.username : req.body.handle}', '${req.body.handle}', '${req.body.bio}')`;
+VALUES ('${req.body.email.replace(/'/g, "\\'")}', '${hashedPw}', '${req.body.username ? req.body.username.replace(/'/g, "\\'") : req.body.handle}', '${req.body.handle}', '${req.body.bio.replace(/'/g, "\\'")}')`;
     await connection.query(sqlQuery);
 
     sqlQuery = `SELECT * FROM user WHERE email = '${req.body.email}'`;

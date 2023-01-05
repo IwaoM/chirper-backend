@@ -108,7 +108,7 @@ exports.searchAll = async () => {};
 exports.postOne = async (req, res) => {
   try {
     let sqlQuery = `INSERT INTO chirp (timestamp, text, image, author_id, reply_to_id)
-VALUES ('${req.body.timestamp}', '${req.body.chirpText}', ${req.file ? true : false}, ${req.body.authorId}, ${req.body.replyToId || "null"})`;
+VALUES ('${req.body.timestamp}', '${req.body.chirpText.replace(/'/g, "\\'")}', ${req.file ? true : false}, ${req.body.authorId}, ${req.body.replyToId || "null"})`;
     await connection.query(sqlQuery);
 
     sqlQuery = `SELECT * FROM chirp WHERE timestamp = '${req.body.timestamp}' AND author_id = '${req.body.authorId}'`;
@@ -132,7 +132,7 @@ exports.unstarOne = async () => {};
 
 exports.deleteOne = async (req, res) => {
   try {
-    let sqlQuery = `select image FROM chirp WHERE id = '${req.params.id}'`;
+    let sqlQuery = `SELECT image FROM chirp WHERE id = '${req.params.id}'`;
     const result = await connection.query(sqlQuery);
     const chirpHasImage = parseInt(result[0].image);
 

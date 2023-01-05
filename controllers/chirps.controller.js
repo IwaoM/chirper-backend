@@ -103,6 +103,15 @@ exports.getOneStarCount = async (req, res) => {
   }
 };
 
+exports.getChirpStarredByUser = async (req, res) => {
+  try {
+    const result = await connection.query(`SELECT COUNT(*) AS starred FROM user_stars_chirp WHERE chirp_id = ${req.params.id} AND user_id = ${req.params.userId}`);
+    res.status(200).json(result[0].starred ? true : false);
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+};
+
 exports.searchAll = async () => {};
 
 exports.postOne = async (req, res) => {
@@ -126,9 +135,24 @@ VALUES ('${req.body.timestamp}', '${req.body.chirpText.replace(/'/g, "\\'")}', $
   }
 };
 
-exports.starOne = async () => {};
-
-exports.unstarOne = async () => {};
+exports.starOne = async (req, res) => {
+  try {
+    let sqlQuery = `SELECT COUNT(*) AS alreadyStarred FROM user_stars_chirp WHERE chirp_id = ${req.params.id} AND user_id = ${req.params.userId}`;
+    const result = await connection.query(sqlQuery);
+    if (result[0].alreadyStarred && !req.body.starred) {
+      // delete the star
+      sqlQuery = `DELETE FROM user_stars_chirp WHERE chirp_id = ${req.params.id} AND user_id = ${req.params.userId}`;
+      await connection.query(sqlQuery);
+    } else if (!result[0].alreadyStarred && req.body.starred) {
+      // add a star
+      sqlQuery = `INSERT INTO user_stars_chirp (user_id, chirp_id) VALUES (${req.params.userId}, ${req.params.id})`;
+      await connection.query(sqlQuery);
+    }
+    res.status(200).json({ starred: req.body.starred });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};
 
 exports.deleteOne = async (req, res) => {
   try {

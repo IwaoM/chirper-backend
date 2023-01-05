@@ -12,12 +12,12 @@ router.get("/:id/replies", auth, chirpsCtrl.getOneReplies);
 router.get("/:id/image", auth, chirpsCtrl.getOneImage);
 router.get("/:id/replycount", auth, chirpsCtrl.getOneReplyCount);
 router.get("/:id/starcount", auth, chirpsCtrl.getOneStarCount);
+router.get("/:id/stars/:userId", auth, chirpsCtrl.getChirpStarredByUser);
 router.get("/search", auth, chirpsCtrl.searchAll);
 
 router.post("/", auth, upload.single("image"), chirpsCtrl.postOne);
-router.post("/:id/star", auth, chirpsCtrl.starOne);
+router.post("/:id/stars/:userId", auth, chirpsCtrl.starOne);
 
-router.delete("/:id/star", auth, chirpsCtrl.unstarOne);
 router.delete("/:id", auth, chirpsCtrl.deleteOne);
 
 module.exports = router;

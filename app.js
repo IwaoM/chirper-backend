@@ -15,6 +15,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use("/api/chirps", chirpsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/me", meRoutes);

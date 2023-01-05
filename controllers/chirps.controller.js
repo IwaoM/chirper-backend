@@ -132,8 +132,19 @@ exports.unstarOne = async () => {};
 
 exports.deleteOne = async (req, res) => {
   try {
-    let sqlQuery = `DELETE FROM chirp WHERE id = '${req.params.id}'`;
+    let sqlQuery = `select image FROM chirp WHERE id = '${req.params.id}'`;
+    const result = await connection.query(sqlQuery);
+    const chirpHasImage = parseInt(result[0].image);
+
+    sqlQuery = `DELETE FROM chirp WHERE id = '${req.params.id}'`;
     await connection.query(sqlQuery);
+
+    if (chirpHasImage) {
+      // delete the image
+      const imageName = req.params.id + ".png";
+      fs.unlinkSync(path.join(imageFolder, imageName));
+    }
+
     res.status(200).json(req.params.id);
   } catch (err) {
     res.status(500).json({ err });

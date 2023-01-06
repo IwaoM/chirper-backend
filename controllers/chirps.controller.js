@@ -26,6 +26,15 @@ ORDER BY chirp.timestamp DESC`;
   }
 };
 
+exports.getAllStarredByUser = async (req, res) => {
+  try {
+    const result = await connection.query(`SELECT chirp_id FROM user_stars_chirp WHERE user_id = ${req.params.userId}`);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+};
+
 exports.getOne = async (req, res) => {
   let sqlQuery = `SELECT 
   chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
@@ -89,24 +98,6 @@ exports.getOneReplyCount = async (req, res) => {
   try {
     const result = await connection.query(`SELECT COUNT(*) AS replycount FROM chirp WHERE reply_to_id = ${req.params.id}`);
     res.status(200).json(result);
-  } catch (err) {
-    res.status(400).json({ err });
-  }
-};
-
-exports.getOneStarCount = async (req, res) => {
-  try {
-    const result = await connection.query(`SELECT COUNT(*) AS starcount FROM user_stars_chirp WHERE chirp_id = ${req.params.id}`);
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(400).json({ err });
-  }
-};
-
-exports.getChirpStarredByUser = async (req, res) => {
-  try {
-    const result = await connection.query(`SELECT COUNT(*) AS starred FROM user_stars_chirp WHERE chirp_id = ${req.params.id} AND user_id = ${req.params.userId}`);
-    res.status(200).json(result[0].starred ? true : false);
   } catch (err) {
     res.status(400).json({ err });
   }

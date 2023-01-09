@@ -25,7 +25,7 @@ CREATE TABLE user (
   password char(64) NOT NULL,
   username VARCHAR(40) NOT NULL,
   handle VARCHAR(40) UNIQUE NOT NULL,
-  bio VARCHAR(150),
+  bio VARCHAR(160),
   theme_bg INT NOT NULL DEFAULT 0,
   theme_accent INT NOT NULL DEFAULT 0,
   PRIMARY KEY (id)

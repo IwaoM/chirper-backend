@@ -1,9 +1,19 @@
 const fs = require("fs");
 const path = require("path");
+const connection = require("../db");
 
 const ppFolder = path.join(path.dirname(__dirname), "profilePictures");
 
-exports.getOne = async () => {};
+exports.getOne = async (req, res) => {
+  const sqlQuery = `SELECT id, email, username, handle, bio, theme_bg, theme_accent
+FROM user WHERE id = ${req.params.id}`;
+  try {
+    const result = await connection.query(sqlQuery);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+};
 
 exports.getOnePicture = async (req, res) => {
   try {

@@ -26,15 +26,6 @@ ORDER BY chirp.timestamp DESC`;
   }
 };
 
-exports.getAllStarredByUser = async (req, res) => {
-  try {
-    const result = await connection.query(`SELECT chirp_id FROM user_stars_chirp WHERE user_id = ${req.params.userId}`);
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(400).json({ err });
-  }
-};
-
 exports.getOne = async (req, res) => {
   let sqlQuery = `SELECT 
   chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
@@ -48,7 +39,7 @@ FROM
   JOIN chirp_star_count_vw ON chirp.id = chirp_star_count_vw.id 
   JOIN chirp_reply_count_vw ON chirp.id = chirp_reply_count_vw.id 
 
-  WHERE chirp.id = ${req.params.id}`;
+  WHERE chirp.id = ${req.params.chirpId}`;
   try {
     const result = await connection.query(sqlQuery);
     res.status(200).json(result);
@@ -70,7 +61,7 @@ FROM
   JOIN chirp_star_count_vw ON chirp.id = chirp_star_count_vw.id 
   JOIN chirp_reply_count_vw ON chirp.id = chirp_reply_count_vw.id 
 
-WHERE chirp.reply_to_id = ${req.params.id}
+WHERE chirp.reply_to_id = ${req.params.chirpId}
 
 ORDER BY chirp.timestamp DESC`;
   try {
@@ -82,22 +73,13 @@ ORDER BY chirp.timestamp DESC`;
 };
 
 exports.getOneImage = (req, res) => {
-  const imagePath = path.join(imageFolder, req.params.id + ".png");
+  const imagePath = path.join(imageFolder, req.params.chirpId + ".png");
   try {
     if (fs.existsSync(imagePath)) {
       res.status(200).sendFile(imagePath);
     } else {
       res.status(200).json(null);
     }
-  } catch (err) {
-    res.status(400).json({ err });
-  }
-};
-
-exports.getOneReplyCount = async (req, res) => {
-  try {
-    const result = await connection.query(`SELECT COUNT(*) AS replycount FROM chirp WHERE reply_to_id = ${req.params.id}`);
-    res.status(200).json(result);
   } catch (err) {
     res.status(400).json({ err });
   }
@@ -128,15 +110,15 @@ VALUES ('${req.body.timestamp}', '${req.body.chirpText.replace(/'/g, "\\'")}', $
 
 exports.starOne = async (req, res) => {
   try {
-    let sqlQuery = `SELECT COUNT(*) AS alreadyStarred FROM user_stars_chirp WHERE chirp_id = ${req.params.id} AND user_id = ${req.params.userId}`;
+    let sqlQuery = `SELECT COUNT(*) AS alreadyStarred FROM user_stars_chirp WHERE chirp_id = ${req.params.chirpId} AND user_id = ${req.params.userId}`;
     const result = await connection.query(sqlQuery);
     if (result[0].alreadyStarred && !req.body.starred) {
       // delete the star
-      sqlQuery = `DELETE FROM user_stars_chirp WHERE chirp_id = ${req.params.id} AND user_id = ${req.params.userId}`;
+      sqlQuery = `DELETE FROM user_stars_chirp WHERE chirp_id = ${req.params.chirpId} AND user_id = ${req.params.userId}`;
       await connection.query(sqlQuery);
     } else if (!result[0].alreadyStarred && req.body.starred) {
       // add a star
-      sqlQuery = `INSERT INTO user_stars_chirp (user_id, chirp_id) VALUES (${req.params.userId}, ${req.params.id})`;
+      sqlQuery = `INSERT INTO user_stars_chirp (user_id, chirp_id) VALUES (${req.params.userId}, ${req.params.chirpId})`;
       await connection.query(sqlQuery);
     }
     res.status(200).json({ starred: req.body.starred });
@@ -147,20 +129,20 @@ exports.starOne = async (req, res) => {
 
 exports.deleteOne = async (req, res) => {
   try {
-    let sqlQuery = `SELECT image FROM chirp WHERE id = '${req.params.id}'`;
+    let sqlQuery = `SELECT image FROM chirp WHERE id = '${req.params.chirpId}'`;
     const result = await connection.query(sqlQuery);
     const chirpHasImage = parseInt(result[0].image);
 
-    sqlQuery = `DELETE FROM chirp WHERE id = '${req.params.id}'`;
+    sqlQuery = `DELETE FROM chirp WHERE id = '${req.params.chirpId}'`;
     await connection.query(sqlQuery);
 
     if (chirpHasImage) {
       // delete the image
-      const imageName = req.params.id + ".png";
+      const imageName = req.params.chirpId + ".png";
       fs.unlinkSync(path.join(imageFolder, imageName));
     }
 
-    res.status(200).json(req.params.id);
+    res.status(200).json(req.params.chirpId);
   } catch (err) {
     res.status(500).json({ err });
   }

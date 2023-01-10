@@ -7,16 +7,14 @@ const router = express.Router();
 const upload = multer();
 
 router.get("/", auth, chirpsCtrl.getAll);
-router.get("/stars/:userId", auth, chirpsCtrl.getAllStarredByUser);
-router.get("/:id", auth, chirpsCtrl.getOne);
-router.get("/:id/replies", auth, chirpsCtrl.getOneReplies);
-router.get("/:id/image", auth, chirpsCtrl.getOneImage);
-router.get("/:id/replycount", auth, chirpsCtrl.getOneReplyCount);
+router.get("/:chirpId", auth, chirpsCtrl.getOne);
+router.get("/:chirpId/replies", auth, chirpsCtrl.getOneReplies);
+router.get("/:chirpId/image", auth, chirpsCtrl.getOneImage);
 router.get("/search", auth, chirpsCtrl.searchAll);
 
 router.post("/", auth, upload.single("image"), chirpsCtrl.postOne);
-router.post("/:id/stars/:userId", auth, chirpsCtrl.starOne);
+router.post("/:chirpId/stars/:userId", auth, chirpsCtrl.starOne);
 
-router.delete("/:id", auth, chirpsCtrl.deleteOne);
+router.delete("/:chirpId", auth, chirpsCtrl.deleteOne);
 
 module.exports = router;

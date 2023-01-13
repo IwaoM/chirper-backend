@@ -8,6 +8,26 @@ const { jwtSecret } = require("../config.json");
 
 const ppFolder = path.join(path.dirname(__dirname), "profilePictures");
 
+exports.checkEmail = async (req, res) => {
+  const sqlQuery = `SELECT COUNT(*) AS email_taken FROM user WHERE email = '${req.query.email}' AND id <> '${req.query.userId}'`;
+  try {
+    const result = await connection.query(sqlQuery);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+};
+
+exports.checkHandle = async (req, res) => {
+  const sqlQuery = `SELECT COUNT(*) AS handle_taken FROM user WHERE handle = '${req.query.handle}' AND id <> '${req.query.userId}'`;
+  try {
+    const result = await connection.query(sqlQuery);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+};
+
 exports.signup = async (req, res) => {
   try {
     const hashedPw = await bcrypt.hash(req.body.password, 10);
@@ -58,20 +78,32 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.searchEmail = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
-    const result = await connection.query(`SELECT COUNT(*) AS email_taken FROM user WHERE email = '${req.query.email}'`);
-    res.status(200).json(result);
+    let sqlQuery = `UPDATE user SET
+email = '${req.body.email.replace(/'/g, "\\'")}', 
+username = '${req.body.username ? req.body.username.replace(/'/g, "\\'") : req.body.handle}', 
+handle = '${req.body.handle}', 
+bio = '${req.body.bio.replace(/'/g, "\\'")}'
+
+WHERE id = '${req.params.userId}'`;
+    await connection.query(sqlQuery);
+
+    if (!req.body.keepOldProfilePic) {
+      // delete the old profile pic & save the new one if there is one
+      const pictureName = req.params.userId + ".png";
+      if (fs.existsSync(path.join(ppFolder, pictureName))) {
+        fs.unlinkSync(path.join(ppFolder, pictureName));
+      }
+      if (req.file) {
+        fs.writeFileSync(path.join(ppFolder, pictureName), req.file.buffer);
+      }
+    }
+
+    res.status(200).json(req.params.userId);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(500).json({ err });
   }
 };
 
-exports.searchHandle = async (req, res) => {
-  try {
-    const result = await connection.query(`SELECT COUNT(*) AS handle_taken FROM user WHERE handle = '${req.query.handle}'`);
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(400).json({ err });
-  }
-};
+exports.updatePassword = async () => {};

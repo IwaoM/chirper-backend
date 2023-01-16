@@ -1,7 +1,6 @@
 const express = require("express");
 const chirpsRoutes = require("./routes/chirps.route");
 const usersRoutes = require("./routes/users.route");
-const meRoutes = require("./routes/me.route");
 const authRoutes = require("./routes/auth.route");
 
 //* construct app
@@ -20,7 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/chirps", chirpsRoutes);
 app.use("/api/users", usersRoutes);
-app.use("/api/me", meRoutes);
 app.use("/api/auth", authRoutes);
 
 module.exports = app;

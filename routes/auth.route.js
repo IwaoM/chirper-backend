@@ -10,7 +10,5 @@ router.get("/check-handle", authCtrl.checkHandle);
 
 router.post("/signup", upload.single("profilePic"), authCtrl.signup);
 router.post("/login", upload.none(), authCtrl.login);
-router.post("/:userId/update-profile", upload.single("profilePic"), authCtrl.updateProfile);
-router.post("/:userId/update-password", upload.none(), authCtrl.updatePassword);
 
 module.exports = router;

@@ -77,33 +77,3 @@ exports.login = async (req, res) => {
     res.status(500).json({ err });
   }
 };
-
-exports.updateProfile = async (req, res) => {
-  try {
-    let sqlQuery = `UPDATE user SET
-email = '${req.body.email.replace(/'/g, "\\'")}', 
-username = '${req.body.username ? req.body.username.replace(/'/g, "\\'") : req.body.handle}', 
-handle = '${req.body.handle}', 
-bio = '${req.body.bio.replace(/'/g, "\\'")}'
-
-WHERE id = '${req.params.userId}'`;
-    await connection.query(sqlQuery);
-
-    if (!req.body.keepOldProfilePic) {
-      // delete the old profile pic & save the new one if there is one
-      const pictureName = req.params.userId + ".png";
-      if (fs.existsSync(path.join(ppFolder, pictureName))) {
-        fs.unlinkSync(path.join(ppFolder, pictureName));
-      }
-      if (req.file) {
-        fs.writeFileSync(path.join(ppFolder, pictureName), req.file.buffer);
-      }
-    }
-
-    res.status(200).json(req.params.userId);
-  } catch (err) {
-    res.status(500).json({ err });
-  }
-};
-
-exports.updatePassword = async () => {};

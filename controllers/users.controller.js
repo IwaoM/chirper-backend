@@ -11,7 +11,7 @@ exports.getOne = async (req, res) => {
 FROM user WHERE id = ${req.params.userId}`;
   try {
     const result = await connection.query(sqlQuery);
-    res.status(200).json(result);
+    res.status(200).json(result[0]);
   } catch (err) {
     res.status(400).json({ err });
   }
@@ -21,10 +21,10 @@ exports.getOnePicture = async (req, res) => {
   try {
     const ppPath = path.join(ppFolder, req.params.userId + ".png");
     if (fs.existsSync(ppPath)) {
-      res.sendFile(ppPath);
+      res.status(200).sendFile(ppPath);
     } else {
       const defaultPpPath = path.join(ppFolder, "default.png");
-      res.sendFile(defaultPpPath);
+      res.status(200).sendFile(defaultPpPath);
     }
   } catch (err) {
     res.status(400).json({ err });
@@ -81,7 +81,7 @@ ORDER BY chirp.timestamp DESC`;
 exports.getOneStarIds = async (req, res) => {
   try {
     const result = await connection.query(`SELECT chirp_id FROM user_stars_chirp WHERE user_id = ${req.params.userId}`);
-    res.status(200).json(result);
+    res.status(200).json(result.map(elem => elem.chirp_id));
   } catch (err) {
     res.status(400).json({ err });
   }
@@ -121,18 +121,14 @@ exports.updatePassword = async (req, res) => {
   try {
     let sqlQuery = `SELECT * FROM user WHERE id = '${req.params.userId}'`;
     const result = await connection.query(sqlQuery);
-    if (result.length) {
-      const validPw = await bcrypt.compare(req.body.oldPassword, result[0].password);
-      if (validPw) {
-        const hashedPw = await bcrypt.hash(req.body.newPassword, 10);
-        sqlQuery = `UPDATE user SET password = '${hashedPw}' WHERE id = '${req.params.userId}'`;
-        await connection.query(sqlQuery);
-        res.status(200).json(req.params.userId);
-      } else {
-        res.status(401).json({ message: "Incorrect credentials" });
-      }
+    const validPw = await bcrypt.compare(req.body.oldPassword, result[0].password);
+    if (validPw) {
+      const hashedPw = await bcrypt.hash(req.body.newPassword, 10);
+      sqlQuery = `UPDATE user SET password = '${hashedPw}' WHERE id = '${req.params.userId}'`;
+      await connection.query(sqlQuery);
+      res.status(200).json(req.params.userId);
     } else {
-      res.status(401).json({ message: "Incorrect credentials" });
+      res.status(401).json({ message: "Incorrect password" });
     }
   } catch (err) {
     res.status(500).json({ err });

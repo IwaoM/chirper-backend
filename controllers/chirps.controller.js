@@ -42,7 +42,7 @@ FROM
   WHERE chirp.id = ${req.params.chirpId}`;
   try {
     const result = await connection.query(sqlQuery);
-    res.status(200).json(result);
+    res.status(200).json(result[0]);
   } catch (err) {
     res.status(400).json({ err });
   }
@@ -121,7 +121,7 @@ exports.starOne = async (req, res) => {
       sqlQuery = `INSERT INTO user_stars_chirp (user_id, chirp_id) VALUES (${req.params.userId}, ${req.params.chirpId})`;
       await connection.query(sqlQuery);
     }
-    res.status(200).json({ starred: req.body.starred });
+    res.status(200).json(req.params.chirpId);
   } catch (err) {
     res.status(500).json({ err });
   }

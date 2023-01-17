@@ -60,11 +60,7 @@ exports.login = async (req, res) => {
         res.status(200).json({
           userId: result[0].id,
           username: result[0].username,
-          token: jwt.sign(
-            { userId: result[0].id },
-            jwtSecret,
-            { expiresIn: "24h" }
-          )
+          token: jwt.sign({ userId: result[0].id }, jwtSecret, { expiresIn: "24h" })
         });
       } else {
         res.status(401).json({ message: "Incorrect credentials" });

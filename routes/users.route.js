@@ -13,7 +13,9 @@ router.get("/:userId/chirps", auth, usersCtrl.getOneChirps);
 router.get("/:userId/stars", auth, usersCtrl.getOneStars);
 router.get("/:userId/star-ids", auth, usersCtrl.getOneStarIds);
 
-router.post("/:userId/update-profile", upload.single("profilePic"), usersCtrl.updateProfile);
-router.post("/:userId/update-password", upload.none(), usersCtrl.updatePassword);
+router.post("/:userId/profile", upload.single("profilePic"), usersCtrl.updateProfile);
+router.post("/:userId/password", upload.none(), usersCtrl.updatePassword);
+router.post("/:userId/theme-bg", upload.none(), usersCtrl.updateThemeBg);
+router.post("/:userId/theme-accent", upload.none(), usersCtrl.updateThemeAccent);
 
 module.exports = router;

@@ -134,3 +134,23 @@ exports.updatePassword = async (req, res) => {
     res.status(500).json({ err });
   }
 };
+
+exports.updateThemeBg = async (req, res) => {
+  try {
+    let sqlQuery = `UPDATE user SET theme_bg = '${req.body.value}' WHERE id = '${req.params.userId}'`;
+    await connection.query(sqlQuery);
+    res.status(200).json(req.params.userId);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};
+
+exports.updateThemeAccent = async (req, res) => {
+  try {
+    let sqlQuery = `UPDATE user SET theme_accent = '${req.body.value}' WHERE id = '${req.params.userId}'`;
+    await connection.query(sqlQuery);
+    res.status(200).json(req.params.userId);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};

@@ -58,8 +58,7 @@ exports.login = async (req, res) => {
       const validPw = await bcrypt.compare(req.body.password, result[0].password);
       if (validPw) {
         res.status(200).json({
-          userId: result[0].id,
-          username: result[0].username,
+          user: result[0],
           token: jwt.sign({ userId: result[0].id }, jwtSecret, { expiresIn: "24h" })
         });
       } else {

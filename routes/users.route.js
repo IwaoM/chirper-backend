@@ -13,9 +13,11 @@ router.get("/:userId/chirps", auth, usersCtrl.getOneChirps);
 router.get("/:userId/stars", auth, usersCtrl.getOneStars);
 router.get("/:userId/star-ids", auth, usersCtrl.getOneStarIds);
 
-router.post("/:userId/profile", upload.single("profilePic"), usersCtrl.updateProfile);
-router.post("/:userId/password", upload.none(), usersCtrl.updatePassword);
-router.post("/:userId/theme-bg", upload.none(), usersCtrl.updateThemeBg);
-router.post("/:userId/theme-accent", upload.none(), usersCtrl.updateThemeAccent);
+router.post("/:userId/profile", auth, upload.single("profilePic"), usersCtrl.updateProfile);
+router.post("/:userId/password", auth, upload.none(), usersCtrl.updatePassword);
+router.post("/:userId/theme-bg", auth, usersCtrl.updateThemeBg);
+router.post("/:userId/theme-accent", auth, usersCtrl.updateThemeAccent);
+
+router.delete("/:userId", auth, usersCtrl.deleteOne);
 
 module.exports = router;

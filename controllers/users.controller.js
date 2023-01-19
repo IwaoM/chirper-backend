@@ -154,3 +154,20 @@ exports.updateThemeAccent = async (req, res) => {
     res.status(500).json({ err });
   }
 };
+
+exports.deleteOne = async (req, res) => {
+  try {
+    const sqlQuery = `DELETE FROM user WHERE id = '${req.params.userId}'`;
+    await connection.query(sqlQuery);
+
+    const pictureName = req.params.chirpId + ".png";
+    if (fs.existsSync(path.join(ppFolder, pictureName))) {
+      // delete the profile picture
+      fs.unlinkSync(path.join(ppFolder, pictureName));
+    }
+
+    res.status(200).json(req.params.userId);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};

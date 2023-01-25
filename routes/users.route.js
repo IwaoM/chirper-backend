@@ -6,7 +6,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 const upload = multer();
 
-router.get("/search", auth, usersCtrl.searchAll);
+router.get("/search", auth, usersCtrl.search);
 router.get("/:userId", auth, usersCtrl.getOne);
 router.get("/:userId/picture", auth, usersCtrl.getOnePicture);
 router.get("/:userId/chirps", auth, usersCtrl.getOneChirps);

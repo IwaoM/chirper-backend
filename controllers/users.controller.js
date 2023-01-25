@@ -90,7 +90,18 @@ exports.getOneStarIds = async (req, res) => {
   }
 };
 
-exports.searchAll = async () => {};
+exports.search = async (req, res) => {
+  try {
+    const sqlQuery = `SELECT id, email, username, handle, bio, theme_bg, theme_accent
+    FROM user
+    WHERE username LIKE '%${req.query.searchText.replace(/%/g, "\\%").replace(/_/g, "\\_")}%' OR handle LIKE '%${req.query.searchText.replace(/%/g, "\\%").replace(/_/g, "\\_")}%'`;
+
+    const result = await connection.query(sqlQuery);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+};
 
 exports.updateProfile = async (req, res) => {
   try {

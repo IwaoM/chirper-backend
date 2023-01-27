@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const connection = require("../db");
 
 const ppFolder = path.join(path.dirname(__dirname), "profilePictures");
+const imageFolder = path.join(path.dirname(__dirname), "chirpImages");
 
 exports.getOne = async (req, res) => {
   try {
@@ -175,13 +176,25 @@ exports.updateThemeAccent = async (req, res) => {
 
 exports.deleteOne = async (req, res) => {
   try {
-    const sqlQuery = `DELETE FROM user WHERE id = '${req.params.userId}'`;
-    const pictureName = req.params.chirpId + ".png";
+    const sqlQuery = `SELECT id, image FROM chirp WHERE author_id = '${req.params.userId}'`;
+    const sqlQuery2 = `DELETE FROM user WHERE id = '${req.params.userId}'`;
+    const pictureName = req.params.userId + ".png";
 
-    await connection.query(sqlQuery);
+    const result = await connection.query(sqlQuery);
+
+    await connection.query(sqlQuery2);
     if (fs.existsSync(path.join(ppFolder, pictureName))) {
       // delete the profile picture
       fs.unlinkSync(path.join(ppFolder, pictureName));
+    }
+
+    // the user's chirps are automatically deleted, but not their images
+    for (let i = 0; i < result.length; i++) {
+      if (result[i].image) {
+        // delete the chirp image
+        const imageName = result[i].id + ".png";
+        fs.unlinkSync(path.join(imageFolder, imageName));
+      }
     }
 
     res.status(200).json(req.params.userId);

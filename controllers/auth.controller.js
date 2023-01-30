@@ -35,8 +35,13 @@ exports.checkHandle = async (req, res) => {
 exports.signup = async (req, res) => {
   try {
     const hashedPw = await bcrypt.hash(req.body.password, 10);
-    const sqlQuery = `INSERT INTO user (email, password, username, handle, bio)
-    VALUES ('${req.body.email.replace(/'/g, "\\'")}', '${hashedPw}', '${req.body.username ? req.body.username.replace(/'/g, "\\'") : req.body.handle}', '${req.body.handle}', '${req.body.bio.replace(/'/g, "\\'")}')`;
+    const sqlQuery = `INSERT INTO user (email, password, username, handle, bio, pic_updated)
+    VALUES ('${req.body.email.replace(/'/g, "\\'")}', 
+    '${hashedPw}', 
+    '${req.body.username ? req.body.username.replace(/'/g, "\\'") : req.body.handle}', 
+    '${req.body.handle}', 
+    '${req.body.bio.replace(/'/g, "\\'")}',
+    '${req.body.picUpdated}')`;
     const sqlQuery2 = `SELECT * FROM user WHERE email = '${req.body.email}'`;
 
     await connection.query(sqlQuery);

@@ -9,7 +9,7 @@ const imageFolder = path.join(path.dirname(__dirname), "chirpImages");
 
 exports.getOne = async (req, res) => {
   try {
-    const sqlQuery = `SELECT id, email, username, handle, bio, theme_bg, theme_accent
+    const sqlQuery = `SELECT id, email, username, handle, bio, theme_bg, theme_accent, pic_updated
     FROM user
     WHERE id = ${req.params.userId}`;
 
@@ -93,7 +93,7 @@ exports.getOneStarIds = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    const sqlQuery = `SELECT id, email, username, handle, bio, theme_bg, theme_accent
+    const sqlQuery = `SELECT id, email, username, handle, bio, theme_bg, theme_accent, pic_updated
     FROM user
     WHERE username LIKE '%${req.query.searchText.replace(/%/g, "\\%").replace(/_/g, "\\_")}%' OR handle LIKE '%${req.query.searchText.replace(/%/g, "\\%").replace(/_/g, "\\_")}%'`;
 
@@ -111,6 +111,7 @@ exports.updateProfile = async (req, res) => {
     username = '${req.body.username ? req.body.username.replace(/'/g, "\\'") : req.body.handle}', 
     handle = '${req.body.handle}', 
     bio = '${req.body.bio.replace(/'/g, "\\'")}'
+    ${req.body.picUpdated ? `, pic_updated = '${req.body.picUpdated}'` : ""}
     WHERE id = '${req.params.userId}'`;
 
     await connection.query(sqlQuery);

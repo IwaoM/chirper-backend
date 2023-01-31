@@ -39,7 +39,7 @@ exports.getOneChirps = async (req, res) => {
   try {
     const sqlQuery = `SELECT 
       chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
-      user.username, user.handle, 
+      user.username, user.handle, user.pic_updated, 
       chirp_star_count_vw.star_count, 
       chirp_reply_count_vw.reply_count 
     FROM 
@@ -61,7 +61,7 @@ exports.getOneStars = async (req, res) => {
   try {
     const sqlQuery = `SELECT 
       chirp.id, chirp.timestamp, chirp.text, chirp.image, chirp.author_id, chirp.reply_to_id, 
-      user.username, user.handle, 
+      user.username, user.handle, user.pic_updated, 
       chirp_star_count_vw.star_count, 
       chirp_reply_count_vw.reply_count 
     FROM 

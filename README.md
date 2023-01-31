@@ -10,6 +10,7 @@ A (very) simple Twitter-like social media app I built to practice fullstack deve
 
 ## Requirements
 
+- Node.JS 18.12.1 or newer is required - prior versions may work but were not tested.
 - MySQL is needed to store the app's data - on Windows, the [MySQL installer](https://dev.mysql.com/downloads/installer/) can be used to install it.
   - In the installer, only the *Server* component is needed.
 
